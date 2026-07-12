@@ -29,8 +29,21 @@ class HabitViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = 0
         )
-    init {
-    }
+
+    val completedHabitCount: StateFlow<Int> = repository.getCompletedHabits()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = 0
+        )
+
+    val completedHabitRate: StateFlow<Int> = repository.getCompletedRate()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = 0
+        )
+
 
      fun insertNewHabit(name: String,iconIndex: Int) {
         viewModelScope.launch {
@@ -41,6 +54,13 @@ class HabitViewModel @Inject constructor(
     fun deleteHabitById(habitId: Int) {
         viewModelScope.launch {
             repository.deleteHabitById(habitId)
+        }
+    }
+
+    fun updateHabit(item: HabitItem, isChecked: Boolean) {
+        viewModelScope.launch {
+            val updatedItem = item.copy(isCompleted = isChecked)
+            repository.updateHabit(updatedItem)
         }
     }
 

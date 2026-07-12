@@ -32,8 +32,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.toColor
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.smarthabittracker.data.HabitViewModel
+import com.example.smarthabittracker.data.getColorFromNum
 import com.example.smarthabittracker.data.habitIcons
 import com.example.smarthabittracker.ui.theme.PrimaryColor
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -45,6 +47,9 @@ fun HomeScreen(
 ) {
     val habitList by hiltViewModel.habitList.collectAsState()
     val habitCount by hiltViewModel.habitCount.collectAsState()
+    val habitCompleted by hiltViewModel.completedHabitCount.collectAsState()
+    val habitCompletedRate by hiltViewModel.completedHabitRate.collectAsState()
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -59,14 +64,14 @@ fun HomeScreen(
         )
         {
             Text(
-                text = "80%",
+                text = "$habitCompletedRate%",
                 fontSize = 60.sp,
-                color = Color.Green
+                color = getColorFromNum(habitCompletedRate)
             )
             Spacer(Modifier.height(16.dp))
 
             Text(
-                text = "8/$habitCount HABITS COMPLETE",
+                text = "$habitCompleted/$habitCount HABITS COMPLETE",
                 color = Color.White
             )
 
@@ -80,7 +85,9 @@ fun HomeScreen(
                 HabitCard(
                     item.name,
                     item.iconIndex,
-                    onDelete = {hiltViewModel.deleteHabitById(item.id)}
+                    item.isCompleted,
+                    onDelete = {hiltViewModel.deleteHabitById(item.id)},
+                    onCheck = {hiltViewModel.updateHabit(item,!item.isCompleted)}
                 )
             }
 
@@ -97,9 +104,10 @@ fun HomeScreen(
 fun HabitCard(
     name: String = "wakeup early",
     iconIndex: Int = 0,
-    onDelete: () -> Unit = {}
+    isChecked: Boolean = false,
+    onDelete: () -> Unit = {},
+    onCheck: () -> Unit = {}
 ) {
-    var isChecked by rememberSaveable { mutableStateOf(false) }
     Card(
     modifier = Modifier
         .fillMaxWidth(),
@@ -126,7 +134,7 @@ fun HabitCard(
             )
             Checkbox(
                 checked = isChecked,
-                onCheckedChange = {isChecked = it}
+                onCheckedChange = {onCheck()}
             )
             IconButton(
                 onClick = {onDelete()}

@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 data class HabitItem(
     val name: String,
     val iconIndex: Int,
+    val isCompleted: Boolean = false,
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
 
 )

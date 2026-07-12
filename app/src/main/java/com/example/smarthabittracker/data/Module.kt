@@ -22,7 +22,8 @@ object Module {
             context,
             HabitDataBase::class.java,
             "habit_database"
-        ).build()
+        ).fallbackToDestructiveMigration()
+            .build()
     }
 
     @Provides

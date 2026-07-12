@@ -1,7 +1,6 @@
 package com.example.smarthabittracker.data
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.DirectionsRun
 import androidx.compose.material.icons.outlined.Book
 import androidx.compose.material.icons.outlined.Brush
 import androidx.compose.material.icons.outlined.CheckCircle
@@ -34,7 +33,7 @@ import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material.icons.outlined.WaterDrop
 import androidx.compose.material.icons.outlined.WbSunny
-
+import androidx.compose.ui.graphics.Color
 val habitIcons = listOf(
     Icons.Outlined.WaterDrop,
     Icons.Outlined.WbSunny,
@@ -69,3 +68,12 @@ val habitIcons = listOf(
     Icons.Outlined.LocalAtm,
     Icons.Outlined.Mosque,
 )
+
+
+fun getColorFromNum(num: Int): Color {
+    return when (num) {
+        in 0..30 -> Color.Red
+        in 31..60 -> Color.Yellow
+        else -> Color.Green
+    }
+}
