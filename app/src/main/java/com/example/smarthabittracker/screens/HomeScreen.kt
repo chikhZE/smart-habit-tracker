@@ -10,24 +10,41 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.smarthabittracker.data.HabitViewModel
+import com.example.smarthabittracker.data.habitIcons
 import com.example.smarthabittracker.ui.theme.PrimaryColor
+import dagger.hilt.android.lifecycle.HiltViewModel
 
 @Composable
 fun HomeScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    hiltViewModel: HabitViewModel = hiltViewModel()
 ) {
+    val habitList by hiltViewModel.habitList.collectAsState()
+    val habitCount by hiltViewModel.habitCount.collectAsState()
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -49,7 +66,7 @@ fun HomeScreen(
             Spacer(Modifier.height(16.dp))
 
             Text(
-                text = "8/10 HABITS COMPLETE",
+                text = "8/$habitCount HABITS COMPLETE",
                 color = Color.White
             )
 
@@ -59,8 +76,12 @@ fun HomeScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(15) {
-                HabitCard()
+            items(habitList){ item ->
+                HabitCard(
+                    item.name,
+                    item.iconIndex,
+                    onDelete = {hiltViewModel.deleteHabitById(item.id)}
+                )
             }
 
         }
@@ -73,10 +94,19 @@ fun HomeScreen(
 
 
 @Composable
-fun HabitCard() {
+fun HabitCard(
+    name: String = "wakeup early",
+    iconIndex: Int = 0,
+    onDelete: () -> Unit = {}
+) {
+    var isChecked by rememberSaveable { mutableStateOf(false) }
     Card(
     modifier = Modifier
         .fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = if(isChecked) Color.Green else Color.DarkGray,
+            contentColor = if(isChecked) Color.Black else Color.White
+        )
     ) {
         Row(
             modifier = Modifier
@@ -85,19 +115,28 @@ fun HabitCard() {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
-                imageVector = Icons.Filled.WbSunny,
+                imageVector = habitIcons[iconIndex],
                 contentDescription = null
             )
             Text(
-                text = "Wake Up Early",
+                text = name,
                 modifier = Modifier
                     .weight(1f)
                     .padding(horizontal = 8.dp)
             )
             Checkbox(
-                checked = false,
-                onCheckedChange = {}
+                checked = isChecked,
+                onCheckedChange = {isChecked = it}
             )
+            IconButton(
+                onClick = {onDelete()}
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = null,
+                    tint = Color.Red
+                )
+            }
 
         }
     }

@@ -25,7 +25,9 @@ import com.example.smarthabittracker.screens.HomeScreen
 import com.example.smarthabittracker.screens.NavBottom
 import com.example.smarthabittracker.ui.theme.PrimaryColor
 import com.example.smarthabittracker.ui.theme.SmartHabitTrackerTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

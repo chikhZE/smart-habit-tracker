@@ -32,15 +32,19 @@ import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.smarthabittracker.R
+import com.example.smarthabittracker.data.HabitViewModel
 import com.example.smarthabittracker.data.habitIcons
 import com.example.smarthabittracker.ui.theme.PrimaryColor
 
 @Composable
 fun AddScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    hiltviewModel: HabitViewModel = hiltViewModel()
 ) {
     var selectedIconIndex by remember { mutableStateOf(0) }
+    var habitNameValue by remember { mutableStateOf("") }
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -50,8 +54,8 @@ fun AddScreen(
         Text(text = stringResource(R.string.habit_name) ,Modifier.fillMaxWidth())
         Spacer(Modifier.height(8.dp))
         OutlinedTextField(
-            value = "",
-            onValueChange = {},
+            value = habitNameValue,
+            onValueChange = {newV -> habitNameValue = newV },
             placeholder = { Text(stringResource(R.string.ex_text)) },
             modifier = Modifier.fillMaxWidth()
 
@@ -95,7 +99,13 @@ fun AddScreen(
         }
         Spacer(Modifier.height(16.dp))
         Button(
-            onClick = {},
+            onClick = {
+                if(habitNameValue.isNotBlank()) {
+                    hiltviewModel.insertNewHabit(habitNameValue,selectedIconIndex)
+                    habitNameValue = ""
+                    selectedIconIndex = 0
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(PrimaryColor)
