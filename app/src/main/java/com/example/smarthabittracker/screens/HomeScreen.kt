@@ -30,10 +30,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColor
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.smarthabittracker.R
 import com.example.smarthabittracker.data.HabitViewModel
 import com.example.smarthabittracker.data.getColorFromNum
 import com.example.smarthabittracker.data.habitIcons
@@ -64,14 +66,14 @@ fun HomeScreen(
         )
         {
             Text(
-                text = "$habitCompletedRate%",
-                fontSize = 60.sp,
+                text = if(habitCount> 0) "$habitCompletedRate%" else stringResource(R.string.there_is_no_habit),
+                fontSize = if(habitCount> 0) 60.sp else 24.sp,
                 color = getColorFromNum(habitCompletedRate)
             )
             Spacer(Modifier.height(16.dp))
 
             Text(
-                text = "$habitCompleted/$habitCount HABITS COMPLETE",
+                text = "$habitCompleted/$habitCount" + stringResource(R.string.habit_completed),
                 color = Color.White
             )
 

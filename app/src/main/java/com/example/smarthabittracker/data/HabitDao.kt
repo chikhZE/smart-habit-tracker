@@ -27,4 +27,7 @@ interface HabitDao {
 
     @Query("SELECT COUNT(*) FROM habit_table WHERE isCompleted = 1")
     fun getCompletedHabits(): Flow<Int>
+
+    @Query("UPDATE habit_table SET isCompleted = 0")
+    suspend fun resetDailyHabits()
 }

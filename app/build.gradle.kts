@@ -70,5 +70,16 @@ dependencies {
     //Icons
     implementation("androidx.compose.material:material-icons-extended:1.7.0")
 
+    //WorkManager
+    val work_version = "2.9.0"
+    implementation("androidx.work:work-runtime-ktx:$work_version")
+
+    val hilt_work_version = "1.2.0"
+
+    // مكتبة Hilt للـ WorkManager
+    implementation("androidx.hilt:hilt-work:$hilt_work_version")
+
+    // الـ Compiler لـ KSP لتوليد الكود
+    ksp("androidx.hilt:hilt-compiler:$hilt_work_version")
 
 }
